@@ -24,13 +24,29 @@ The task was to classify package condition images into three classes, `Aman`, `R
 | `a100-bundle/` | Scripts to run the queue on a shared A100 |
 | `image-cv-template/` | Reusable template for an image classification competition with lessons learned |
 | `scratchpad/` | Analysis scripts for blends, shift and buckets, run configs and server logs |
+| `probabilities/` | Saved out-of-fold and test probabilities of 59 runs, see below |
 | `submission/` | The notebook, requirements and write-up that were handed in |
 | `submission-*.csv`, `late-probes/`, `result.zip` | Prediction files of single runs and blends, one file for each submission |
 | `sub_*.csv`, `datascape-2026-sota-gpu-training*.ipynb` | Files from a teammate, see the note below |
 
+## Saved probabilities
+
+`probabilities/probs-run<N>-<name>` holds the predictions of 59 runs as they were saved, so blends and scores can be recomputed without training again. Runs 18 to 23, 25, 31, 34 to 73 and 77 to 81 are `.npz` files. The earliest runs (14 to 17, 24, 26, 28, 29, 30 and 32) are `.zip` files that hold the same arrays as `.npy` files.
+
+| Array | Shape | Meaning |
+|---|---|---|
+| `classes` | 3 | class names, `Aman`, `Rusak`, `Lainnya` |
+| `oof_filepaths` | 12,172 | training image paths in the row order of the arrays below |
+| `oof_targets` | 12,172 | training labels as class indices |
+| `oof_probs_flip`, `oof_probs_tta` | 12,172 x 3 | out-of-fold probabilities |
+| `test_filenames` | 3,057 | test image names |
+| `test_probs` | 3,057 x 3 | test probabilities averaged over the 5 fold models |
+
+The files contain the training image paths and the training labels of the competition, exactly as saved. Compare rows by the last two parts of the path, because the folder prefix differs between Modal, Kaggle and the shared server.
+
 ## Not included
 
-- The competition images and labels, the model checkpoints (over 140 GB) and the saved out-of-fold probabilities. They are too large for GitHub and the data belongs to the organizers.
+- The competition images, the data zip and the model checkpoints (over 140 GB). They are too large for GitHub and the data belongs to the organizers.
 - Virtual environments and caches.
 
 ## Note on the teammate files
