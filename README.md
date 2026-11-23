@@ -31,7 +31,7 @@ The task was to classify package condition images into three classes, `Aman`, `R
 
 ## Saved probabilities
 
-`probabilities/probs-run<N>-<name>` holds the predictions of 59 runs as they were saved, so blends and scores can be recomputed without training again. Runs 18 to 23, 25, 31, 34 to 73 and 77 to 81 are `.npz` files. The earliest runs (14 to 17, 24, 26, 28, 29, 30 and 32) are `.zip` files that hold the same arrays as `.npy` files.
+`probabilities/probs-run<N>-<name>` holds the predictions of 59 runs as they were saved, so blends and scores can be recomputed without training again. Runs 18 to 23, 25, 31, 34 to 52, 55, 58 to 73 and 77 to 81 are `.npz` files. Runs 14 to 17, 24, 26, 28 to 30 and 32 are `.zip` files that hold the same arrays as `.npy` files.
 
 | Array | Shape | Meaning |
 |---|---|---|
