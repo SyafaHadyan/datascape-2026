@@ -1,0 +1,6 @@
+{"runs": {
+ "30": "../archive/probs-run30-siglip-b16.zip",
+ "32": "../archive/probs-run32-siglip2-b16.zip",
+ "34": "../archive/probs-run34-siglip2-b16-seed1-l40.npz",
+ "55": {"probs": "../archive/probs-run55-dinov3-large.npz", "csv": "../submission-run55-dinov3-large.csv"}
+}}

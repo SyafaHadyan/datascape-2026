@@ -1,0 +1,78 @@
+{"RUN_TAG": "run35-siglip2-shiftaug", "SEED_OFFSET": 1, "USE_SHIFT_AUG": true}
+{"RUN_TAG": "run37-siglip-v1-seed1", "SEED_OFFSET": 1, "MODEL_NAME": "vit_base_patch16_siglip_224.webli"}
+{"RUN_TAG": "run38-clip-dfn2b", "MODEL_NAME": "vit_base_patch16_clip_224.dfn2b", "NORM_MEAN": [0.48145466, 0.4578275, 0.40821073], "NORM_STD": [0.26862954, 0.26130258, 0.27577711]}
+{"RUN_TAG": "run39-convnext-base-clip256", "MODEL_NAME": "convnext_base.clip_laion2b_augreg_ft_in12k_in1k", "IMG_SIZE": 256, "TTA_SCALES": [256], "LAYER_DECAY": null, "NORM_MEAN": [0.48145466, 0.4578275, 0.40821073], "NORM_STD": [0.26862954, 0.26130258, 0.27577711]}
+{"RUN_TAG": "run41-clip-laion2b-ftin12k", "MODEL_NAME": "vit_base_patch16_clip_224.laion2b_ft_in12k_in1k", "NORM_MEAN": [0.48145466, 0.4578275, 0.40821073], "NORM_STD": [0.26862954, 0.26130258, 0.27577711]}
+{"RUN_TAG": "run44-dinov3-b16", "MODEL_NAME": "vit_base_patch16_dinov3.lvd1689m", "MODEL_KWARGS": {"img_size": 224}, "NORM_MEAN": [0.485, 0.456, 0.406], "NORM_STD": [0.229, 0.224, 0.225]}
+{"RUN_TAG": "run43-dinov2-b14", "MODEL_NAME": "vit_base_patch14_dinov2.lvd142m", "MODEL_KWARGS": {"img_size": 224}, "NORM_MEAN": [0.485, 0.456, 0.406], "NORM_STD": [0.229, 0.224, 0.225]}
+{"RUN_TAG": "run42-clip-datacompxl", "MODEL_NAME": "vit_base_patch16_clip_224.datacompxl", "NORM_MEAN": [0.48145466, 0.4578275, 0.40821073], "NORM_STD": [0.26862954, 0.26130258, 0.27577711]}
+{"RUN_TAG": "run40-clip-metaclip", "MODEL_NAME": "vit_base_patch16_clip_224.metaclip_2pt5b", "NORM_MEAN": [0.48145466, 0.4578275, 0.40821073], "NORM_STD": [0.26862954, 0.26130258, 0.27577711]}
+{"RUN_TAG": "run45-clip-openai-ftin12k", "MODEL_NAME": "vit_base_patch16_clip_224.openai_ft_in12k_in1k", "NORM_MEAN": [0.48145466, 0.4578275, 0.40821073], "NORM_STD": [0.26862954, 0.26130258, 0.27577711]}
+{"RUN_TAG": "run59-dinov3-b16-seed2", "SEED_OFFSET": 2, "MODEL_NAME": "vit_base_patch16_dinov3.lvd1689m", "MODEL_KWARGS": {"img_size": 224}, "NORM_MEAN": [0.485, 0.456, 0.406], "NORM_STD": [0.229, 0.224, 0.225]}
+{"RUN_TAG": "run60-convnext-base-dinov3", "SEED_OFFSET": 1, "MODEL_NAME": "convnext_base.dinov3_lvd1689m", "LAYER_DECAY": null, "NORM_MEAN": [0.485, 0.456, 0.406], "NORM_STD": [0.229, 0.224, 0.225]}
+{"RUN_TAG": "run61-dinov2-b14-seed2", "SEED_OFFSET": 2, "MODEL_NAME": "vit_base_patch14_dinov2.lvd142m", "MODEL_KWARGS": {"img_size": 224}, "NORM_MEAN": [0.485, 0.456, 0.406], "NORM_STD": [0.229, 0.224, 0.225]}
+{"RUN_TAG": "run55-dinov3-large", "SEED_OFFSET": 1, "MODEL_NAME": "vit_large_patch16_dinov3.lvd1689m", "MODEL_KWARGS": {"img_size": 224}, "BATCH_SIZE": 16, "ACCUM_STEPS": 2, "LAYER_DECAY": 0.85, "FIRST_EPOCH_TIME_LIMIT_S": null, "NORM_MEAN": [0.485, 0.456, 0.406], "NORM_STD": [0.229, 0.224, 0.225]}
+{"RUN_TAG": "run36-siglip2-seed2", "SEED_OFFSET": 2}
+{"RUN_TAG": "run46-siglip2-lr5e-5", "SEED_OFFSET": 1, "LR": 5e-5}
+{"RUN_TAG": "run47-siglip2-lr2e-5", "SEED_OFFSET": 1, "LR": 2e-5}
+{"RUN_TAG": "run48-siglip2-layerdecay085", "SEED_OFFSET": 1, "LAYER_DECAY": 0.85}
+{"RUN_TAG": "run49-siglip2-droppath01", "SEED_OFFSET": 1, "DROP_PATH_RATE": 0.1}
+{"RUN_TAG": "run50-siglip2-ce-nofocal", "SEED_OFFSET": 1, "USE_FOCAL_LOSS": false}
+{"RUN_TAG": "run51-siglip2-wd005", "SEED_OFFSET": 1, "WEIGHT_DECAY": 0.05}
+{"RUN_TAG": "run52-siglip2-ep15", "SEED_OFFSET": 1, "NUM_EPOCHS": 15}
+# moved to the A100 queue {"RUN_TAG": "run53-siglip2-large-256", "SEED_OFFSET": 1, "MODEL_NAME": "vit_large_patch16_siglip_256.v2_webli", "IMG_SIZE": 256, "TTA_SCALES": [256], "BATCH_SIZE": 16, "ACCUM_STEPS": 2, "LAYER_DECAY": 0.85, "FIRST_EPOCH_TIME_LIMIT_S": null}
+# moved to the A100 queue {"RUN_TAG": "run54-clip-large-openai", "SEED_OFFSET": 1, "MODEL_NAME": "vit_large_patch14_clip_224.openai", "BATCH_SIZE": 16, "ACCUM_STEPS": 2, "LAYER_DECAY": 0.85, "FIRST_EPOCH_TIME_LIMIT_S": null, "NORM_MEAN": [0.48145466, 0.4578275, 0.40821073], "NORM_STD": [0.26862954, 0.26130258, 0.27577711]}
+# moved to the A100 queue {"RUN_TAG": "run56-so400m-siglip2", "SEED_OFFSET": 1, "MODEL_NAME": "vit_so400m_patch14_siglip_224.v2_webli", "BATCH_SIZE": 8, "ACCUM_STEPS": 4, "LAYER_DECAY": 0.85, "FIRST_EPOCH_TIME_LIMIT_S": null}
+# moved to the A100 queue {"RUN_TAG": "run57-eva02-large", "SEED_OFFSET": 1, "MODEL_NAME": "eva02_large_patch14_224.mim_m38m", "BATCH_SIZE": 16, "ACCUM_STEPS": 2, "LAYER_DECAY": 0.85, "FIRST_EPOCH_TIME_LIMIT_S": null, "NORM_MEAN": [0.48145466, 0.4578275, 0.40821073], "NORM_STD": [0.26862954, 0.26130258, 0.27577711]}
+# moved to the A100 queue {"RUN_TAG": "run58-siglip2-base-384", "SEED_OFFSET": 1, "MODEL_NAME": "vit_base_patch16_siglip_384.v2_webli", "IMG_SIZE": 384, "TTA_SCALES": [384], "BATCH_SIZE": 16, "ACCUM_STEPS": 2, "FIRST_EPOCH_TIME_LIMIT_S": null}
+# moved to the A100 queue {"RUN_TAG": "run62-pe-core-base", "SEED_OFFSET": 1, "MODEL_NAME": "vit_pe_core_base_patch16_224.fb", "NORM_MEAN": [0.5, 0.5, 0.5], "NORM_STD": [0.5, 0.5, 0.5]}
+# moved to the A100 queue {"RUN_TAG": "run63-eva02-base-clip", "SEED_OFFSET": 1, "MODEL_NAME": "eva02_base_patch16_clip_224.merged2b", "NORM_MEAN": [0.48145466, 0.4578275, 0.40821073], "NORM_STD": [0.26862954, 0.26130258, 0.27577711]}
+# moved to the A100 queue {"RUN_TAG": "run64-siglip2-base-gap", "SEED_OFFSET": 1, "MODEL_NAME": "vit_base_patch16_siglip_gap_224.v2_webli"}
+# moved to the A100 queue {"RUN_TAG": "run65-dinov3-b16-eupe", "SEED_OFFSET": 1, "MODEL_NAME": "vit_base_patch16_dinov3_qkvb.eupe_lvd1689m", "MODEL_KWARGS": {"img_size": 224}, "NORM_MEAN": [0.485, 0.456, 0.406], "NORM_STD": [0.229, 0.224, 0.225]}
+# moved to the A100 queue {"RUN_TAG": "run66-dinov2-b14-reg4", "SEED_OFFSET": 1, "MODEL_NAME": "vit_base_patch14_reg4_dinov2.lvd142m", "MODEL_KWARGS": {"img_size": 224}, "NORM_MEAN": [0.485, 0.456, 0.406], "NORM_STD": [0.229, 0.224, 0.225]}
+# moved to the A100 queue {"RUN_TAG": "run67-siglip2-base-256", "SEED_OFFSET": 1, "MODEL_NAME": "vit_base_patch16_siglip_256.v2_webli", "IMG_SIZE": 256, "TTA_SCALES": [256]}
+{"RUN_TAG": "run68-siglip2-focal-gamma1", "SEED_OFFSET": 1, "FOCAL_GAMMA": 1.0}
+{"RUN_TAG": "run69-siglip2-focal-alpha", "SEED_OFFSET": 1, "FOCAL_USE_ALPHA": true}
+{"RUN_TAG": "run70-siglip2-layerdecay065", "SEED_OFFSET": 1, "LAYER_DECAY": 0.65}
+{"RUN_TAG": "run71-siglip2-batch16", "SEED_OFFSET": 1, "BATCH_SIZE": 16}
+{"RUN_TAG": "run72-siglip2-ep45", "SEED_OFFSET": 1, "NUM_EPOCHS": 45}
+{"RUN_TAG": "run73-siglip2-lr5e-5-ld085-dp01", "SEED_OFFSET": 1, "LR": 5e-05, "LAYER_DECAY": 0.85, "DROP_PATH_RATE": 0.1}
+# moved to the A100 queue {"RUN_TAG": "run74-clip-large-dfn2b", "SEED_OFFSET": 1, "MODEL_NAME": "vit_large_patch14_clip_224.dfn2b", "BATCH_SIZE": 16, "ACCUM_STEPS": 2, "LAYER_DECAY": 0.85, "FIRST_EPOCH_TIME_LIMIT_S": null, "NORM_MEAN": [0.48145466, 0.4578275, 0.40821073], "NORM_STD": [0.26862954, 0.26130258, 0.27577711]}
+# moved to the A100 queue {"RUN_TAG": "run75-aimv2-large", "SEED_OFFSET": 1, "MODEL_NAME": "aimv2_large_patch14_224.apple_pt", "BATCH_SIZE": 16, "ACCUM_STEPS": 2, "LAYER_DECAY": 0.85, "FIRST_EPOCH_TIME_LIMIT_S": null, "NORM_MEAN": [0.48145466, 0.4578275, 0.40821073], "NORM_STD": [0.26862954, 0.26130258, 0.27577711]}
+# moved to the A100 queue {"RUN_TAG": "run76-dinov2-large", "SEED_OFFSET": 1, "MODEL_NAME": "vit_large_patch14_dinov2.lvd142m", "MODEL_KWARGS": {"img_size": 224}, "BATCH_SIZE": 16, "ACCUM_STEPS": 2, "LAYER_DECAY": 0.85, "FIRST_EPOCH_TIME_LIMIT_S": null, "NORM_MEAN": [0.485, 0.456, 0.406], "NORM_STD": [0.229, 0.224, 0.225]}
+{"RUN_TAG": "run77-dinov3-large-seed2", "SEED_OFFSET": 2, "MODEL_NAME": "vit_large_patch16_dinov3.lvd1689m", "MODEL_KWARGS": {"img_size": 224}, "BATCH_SIZE": 16, "ACCUM_STEPS": 2, "LAYER_DECAY": 0.85, "FIRST_EPOCH_TIME_LIMIT_S": null, "NORM_MEAN": [0.485, 0.456, 0.406], "NORM_STD": [0.229, 0.224, 0.225]}
+{"RUN_TAG": "run135-dinov2-b14-seed6", "SEED_OFFSET": 6, "MODEL_NAME": "vit_base_patch14_dinov2.lvd142m", "MODEL_KWARGS": {"img_size": 224}, "NORM_MEAN": [0.485, 0.456, 0.406], "NORM_STD": [0.229, 0.224, 0.225]}
+{"RUN_TAG": "run136-dinov2-b14-seed7", "SEED_OFFSET": 7, "MODEL_NAME": "vit_base_patch14_dinov2.lvd142m", "MODEL_KWARGS": {"img_size": 224}, "NORM_MEAN": [0.485, 0.456, 0.406], "NORM_STD": [0.229, 0.224, 0.225]}
+{"RUN_TAG": "run137-dinov2-b14-ep45", "SEED_OFFSET": 1, "NUM_EPOCHS": 45, "MODEL_NAME": "vit_base_patch14_dinov2.lvd142m", "MODEL_KWARGS": {"img_size": 224}, "NORM_MEAN": [0.485, 0.456, 0.406], "NORM_STD": [0.229, 0.224, 0.225]}
+{"RUN_TAG": "run138-dinov2-b14-focal-gamma1", "SEED_OFFSET": 1, "FOCAL_GAMMA": 1.0, "MODEL_NAME": "vit_base_patch14_dinov2.lvd142m", "MODEL_KWARGS": {"img_size": 224}, "NORM_MEAN": [0.485, 0.456, 0.406], "NORM_STD": [0.229, 0.224, 0.225]}
+{"RUN_TAG": "run139-dinov2-b14-lr2e-5", "SEED_OFFSET": 1, "LR": 2e-05, "MODEL_NAME": "vit_base_patch14_dinov2.lvd142m", "MODEL_KWARGS": {"img_size": 224}, "NORM_MEAN": [0.485, 0.456, 0.406], "NORM_STD": [0.229, 0.224, 0.225]}
+{"RUN_TAG": "run140-siglip2-seed4", "SEED_OFFSET": 4}
+{"RUN_TAG": "run141-clip-datacompxl-seed2", "SEED_OFFSET": 2, "MODEL_NAME": "vit_base_patch16_clip_224.datacompxl", "NORM_MEAN": [0.48145466, 0.4578275, 0.40821073], "NORM_STD": [0.26862954, 0.26130258, 0.27577711]}
+{"RUN_TAG": "run142-dinov3-large-seed3", "SEED_OFFSET": 3, "MODEL_NAME": "vit_large_patch16_dinov3.lvd1689m", "MODEL_KWARGS": {"img_size": 224}, "BATCH_SIZE": 16, "ACCUM_STEPS": 2, "LAYER_DECAY": 0.85, "FIRST_EPOCH_TIME_LIMIT_S": null, "NORM_MEAN": [0.485, 0.456, 0.406], "NORM_STD": [0.229, 0.224, 0.225]}
+{"RUN_TAG": "run143-dinov2-b14-seed8", "SEED_OFFSET": 8, "MODEL_NAME": "vit_base_patch14_dinov2.lvd142m", "MODEL_KWARGS": {"img_size": 224}, "NORM_MEAN": [0.485, 0.456, 0.406], "NORM_STD": [0.229, 0.224, 0.225]}
+{"RUN_TAG": "run144-dinov2-b14-seed9", "SEED_OFFSET": 9, "MODEL_NAME": "vit_base_patch14_dinov2.lvd142m", "MODEL_KWARGS": {"img_size": 224}, "NORM_MEAN": [0.485, 0.456, 0.406], "NORM_STD": [0.229, 0.224, 0.225]}
+{"RUN_TAG": "run145-dinov2-b14-wd01", "SEED_OFFSET": 1, "WEIGHT_DECAY": 0.1, "MODEL_NAME": "vit_base_patch14_dinov2.lvd142m", "MODEL_KWARGS": {"img_size": 224}, "NORM_MEAN": [0.485, 0.456, 0.406], "NORM_STD": [0.229, 0.224, 0.225]}
+{"RUN_TAG": "run146-dinov2-b14-ld055", "SEED_OFFSET": 1, "LAYER_DECAY": 0.55, "MODEL_NAME": "vit_base_patch14_dinov2.lvd142m", "MODEL_KWARGS": {"img_size": 224}, "NORM_MEAN": [0.485, 0.456, 0.406], "NORM_STD": [0.229, 0.224, 0.225]}
+{"RUN_TAG": "run147-dinov2-b14-lr1e-4", "SEED_OFFSET": 1, "LR": 0.0001, "MODEL_NAME": "vit_base_patch14_dinov2.lvd142m", "MODEL_KWARGS": {"img_size": 224}, "NORM_MEAN": [0.485, 0.456, 0.406], "NORM_STD": [0.229, 0.224, 0.225]}
+{"RUN_TAG": "run148-dinov2-b14-280px", "SEED_OFFSET": 1, "IMG_SIZE": 280, "TTA_SCALES": [280], "MODEL_NAME": "vit_base_patch14_dinov2.lvd142m", "MODEL_KWARGS": {"img_size": 280}, "NORM_MEAN": [0.485, 0.456, 0.406], "NORM_STD": [0.229, 0.224, 0.225]}
+{"RUN_TAG": "run149-siglip2-seed5", "SEED_OFFSET": 5}
+{"RUN_TAG": "run150-dinov3-large-seed4", "SEED_OFFSET": 4, "MODEL_NAME": "vit_large_patch16_dinov3.lvd1689m", "MODEL_KWARGS": {"img_size": 224}, "BATCH_SIZE": 16, "ACCUM_STEPS": 2, "LAYER_DECAY": 0.85, "FIRST_EPOCH_TIME_LIMIT_S": null, "NORM_MEAN": [0.485, 0.456, 0.406], "NORM_STD": [0.229, 0.224, 0.225]}
+{"RUN_TAG": "run151-dinov2-b14-seed10", "SEED_OFFSET": 10, "MODEL_NAME": "vit_base_patch14_dinov2.lvd142m", "MODEL_KWARGS": {"img_size": 224}, "NORM_MEAN": [0.485, 0.456, 0.406], "NORM_STD": [0.229, 0.224, 0.225]}
+{"RUN_TAG": "run152-dinov2-b14-ep20", "SEED_OFFSET": 1, "NUM_EPOCHS": 20, "MODEL_NAME": "vit_base_patch14_dinov2.lvd142m", "MODEL_KWARGS": {"img_size": 224}, "NORM_MEAN": [0.485, 0.456, 0.406], "NORM_STD": [0.229, 0.224, 0.225]}
+{"RUN_TAG": "run153-dinov2-b14-batch16", "SEED_OFFSET": 1, "BATCH_SIZE": 16, "MODEL_NAME": "vit_base_patch14_dinov2.lvd142m", "MODEL_KWARGS": {"img_size": 224}, "NORM_MEAN": [0.485, 0.456, 0.406], "NORM_STD": [0.229, 0.224, 0.225]}
+{"RUN_TAG": "run154-siglip-v1-seed2", "SEED_OFFSET": 2, "MODEL_NAME": "vit_base_patch16_siglip_224.webli"}
+{"RUN_TAG": "run155-clip-datacompxl-seed3", "SEED_OFFSET": 3, "MODEL_NAME": "vit_base_patch16_clip_224.datacompxl", "NORM_MEAN": [0.48145466, 0.4578275, 0.40821073], "NORM_STD": [0.26862954, 0.26130258, 0.27577711]}
+{"RUN_TAG": "run156-clip-metaclip-seed2", "SEED_OFFSET": 2, "MODEL_NAME": "vit_base_patch16_clip_224.metaclip_2pt5b", "NORM_MEAN": [0.48145466, 0.4578275, 0.40821073], "NORM_STD": [0.26862954, 0.26130258, 0.27577711]}
+{"RUN_TAG": "run157-dinov3-large-seed5", "SEED_OFFSET": 5, "MODEL_NAME": "vit_large_patch16_dinov3.lvd1689m", "MODEL_KWARGS": {"img_size": 224}, "BATCH_SIZE": 16, "ACCUM_STEPS": 2, "LAYER_DECAY": 0.85, "FIRST_EPOCH_TIME_LIMIT_S": null, "NORM_MEAN": [0.485, 0.456, 0.406], "NORM_STD": [0.229, 0.224, 0.225]}
+{"RUN_TAG": "run158-dinov2-b14-seed11", "SEED_OFFSET": 11, "MODEL_NAME": "vit_base_patch14_dinov2.lvd142m", "MODEL_KWARGS": {"img_size": 224}, "NORM_MEAN": [0.485, 0.456, 0.406], "NORM_STD": [0.229, 0.224, 0.225]}
+{"RUN_TAG": "run159-convnext-base-clip256-seed2", "SEED_OFFSET": 2, "MODEL_NAME": "convnext_base.clip_laion2b_augreg_ft_in12k_in1k", "IMG_SIZE": 256, "TTA_SCALES": [256], "LAYER_DECAY": null, "NORM_MEAN": [0.48145466, 0.4578275, 0.40821073], "NORM_STD": [0.26862954, 0.26130258, 0.27577711]}
+{"RUN_TAG": "run160-clip-dfn2b-seed2", "SEED_OFFSET": 2, "MODEL_NAME": "vit_base_patch16_clip_224.dfn2b", "NORM_MEAN": [0.48145466, 0.4578275, 0.40821073], "NORM_STD": [0.26862954, 0.26130258, 0.27577711]}
+{"RUN_TAG": "run161-siglip2-seed6", "SEED_OFFSET": 6}
+{"RUN_TAG": "run162-dinov3-b16-seed3", "SEED_OFFSET": 3, "MODEL_NAME": "vit_base_patch16_dinov3.lvd1689m", "MODEL_KWARGS": {"img_size": 224}, "NORM_MEAN": [0.485, 0.456, 0.406], "NORM_STD": [0.229, 0.224, 0.225]}
+{"RUN_TAG": "run163-dinov2-b14-seed12", "SEED_OFFSET": 12, "MODEL_NAME": "vit_base_patch14_dinov2.lvd142m", "MODEL_KWARGS": {"img_size": 224}, "NORM_MEAN": [0.485, 0.456, 0.406], "NORM_STD": [0.229, 0.224, 0.225]}
+{"RUN_TAG": "run164-convnext-base-dinov3-seed2", "SEED_OFFSET": 2, "MODEL_NAME": "convnext_base.dinov3_lvd1689m", "LAYER_DECAY": null, "NORM_MEAN": [0.485, 0.456, 0.406], "NORM_STD": [0.229, 0.224, 0.225]}
+{"RUN_TAG": "run165-siglip-v1-seed3", "SEED_OFFSET": 3, "MODEL_NAME": "vit_base_patch16_siglip_224.webli"}
+{"RUN_TAG": "run166-clip-datacompxl-seed4", "SEED_OFFSET": 4, "MODEL_NAME": "vit_base_patch16_clip_224.datacompxl", "NORM_MEAN": [0.48145466, 0.4578275, 0.40821073], "NORM_STD": [0.26862954, 0.26130258, 0.27577711]}
+{"RUN_TAG": "run167-dinov3-large-seed6", "SEED_OFFSET": 6, "MODEL_NAME": "vit_large_patch16_dinov3.lvd1689m", "MODEL_KWARGS": {"img_size": 224}, "BATCH_SIZE": 16, "ACCUM_STEPS": 2, "LAYER_DECAY": 0.85, "FIRST_EPOCH_TIME_LIMIT_S": null, "NORM_MEAN": [0.485, 0.456, 0.406], "NORM_STD": [0.229, 0.224, 0.225]}
+{"RUN_TAG": "run168-clip-metaclip-seed3", "SEED_OFFSET": 3, "MODEL_NAME": "vit_base_patch16_clip_224.metaclip_2pt5b", "NORM_MEAN": [0.48145466, 0.4578275, 0.40821073], "NORM_STD": [0.26862954, 0.26130258, 0.27577711]}
+{"RUN_TAG": "run169-siglip2-seed7", "SEED_OFFSET": 7}

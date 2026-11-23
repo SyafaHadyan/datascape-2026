@@ -1,0 +1,5 @@
+{"runs": {
+ "34": "../archive/probs-run34-siglip2-b16-seed1-l40.npz",
+ "70": {"probs": "../archive/probs-run70-siglip2-layerdecay065.npz", "csv": "../submission-run70-siglip2-layerdecay065.csv"},
+ "71": {"probs": "../archive/probs-run71-siglip2-batch16.npz", "csv": "../submission-run71-siglip2-batch16.csv"}
+}}

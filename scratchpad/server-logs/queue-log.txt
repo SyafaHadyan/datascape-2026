@@ -1,0 +1,72 @@
+2026-10-09 04:40:05 queue driver started, queue queue.jsonl, notebook datascape-2026-cv-notebook-l40.ipynb, finish by no limit
+2026-10-09 04:40:05 START run35-siglip2-shiftaug overrides {'RUN_TAG': 'run35-siglip2-shiftaug', 'SEED_OFFSET': 1, 'USE_SHIFT_AUG': True} extra env {}
+2026-10-09 07:26:42 DONE run35-siglip2-shiftaug in 2.78 h, probs-run35-siglip2-shiftaug.npz and submission-run35-siglip2-shiftaug.csv are ready
+2026-10-09 07:26:42 START run37-siglip-v1-seed1 overrides {'RUN_TAG': 'run37-siglip-v1-seed1', 'SEED_OFFSET': 1, 'MODEL_NAME': 'vit_base_patch16_siglip_224.webli'} extra env {}
+2026-10-09 10:17:25 DONE run37-siglip-v1-seed1 in 2.85 h, probs-run37-siglip-v1-seed1.npz and submission-run37-siglip-v1-seed1.csv are ready
+2026-10-09 10:17:25 START run38-clip-dfn2b overrides {'RUN_TAG': 'run38-clip-dfn2b', 'MODEL_NAME': 'vit_base_patch16_clip_224.dfn2b', 'NORM_MEAN': [0.48145466, 0.4578275, 0.40821073], 'NORM_STD': [0.26862954, 0.26130258, 0.27577711]} extra env {}
+2026-10-09 13:07:16 DONE run38-clip-dfn2b in 2.83 h, probs-run38-clip-dfn2b.npz and submission-run38-clip-dfn2b.csv are ready
+2026-10-09 13:07:16 START run39-convnext-base-clip256 overrides {'RUN_TAG': 'run39-convnext-base-clip256', 'MODEL_NAME': 'convnext_base.clip_laion2b_augreg_ft_in12k_in1k', 'IMG_SIZE': 256, 'TTA_SCALES': [256], 'LAYER_DECAY': None, 'NORM_MEAN': [0.48145466, 0.4578275, 0.40821073], 'NORM_STD': [0.26862954, 0.26130258, 0.27577711]} extra env {}
+2026-10-09 16:58:38 DONE run39-convnext-base-clip256 in 3.86 h, probs-run39-convnext-base-clip256.npz and submission-run39-convnext-base-clip256.csv are ready
+2026-10-09 16:58:38 START run41-clip-laion2b-ftin12k overrides {'RUN_TAG': 'run41-clip-laion2b-ftin12k', 'MODEL_NAME': 'vit_base_patch16_clip_224.laion2b_ft_in12k_in1k', 'NORM_MEAN': [0.48145466, 0.4578275, 0.40821073], 'NORM_STD': [0.26862954, 0.26130258, 0.27577711]} extra env {}
+2026-10-09 19:29:57 DONE run41-clip-laion2b-ftin12k in 2.52 h, probs-run41-clip-laion2b-ftin12k.npz and submission-run41-clip-laion2b-ftin12k.csv are ready
+2026-10-09 19:29:58 START run44-dinov3-b16 overrides {'RUN_TAG': 'run44-dinov3-b16', 'MODEL_NAME': 'vit_base_patch16_dinov3.lvd1689m', 'MODEL_KWARGS': {'img_size': 224}, 'NORM_MEAN': [0.485, 0.456, 0.406], 'NORM_STD': [0.229, 0.224, 0.225]} extra env {}
+2026-10-09 23:07:59 DONE run44-dinov3-b16 in 3.63 h, probs-run44-dinov3-b16.npz and submission-run44-dinov3-b16.csv are ready
+2026-10-09 23:08:00 START run43-dinov2-b14 overrides {'RUN_TAG': 'run43-dinov2-b14', 'MODEL_NAME': 'vit_base_patch14_dinov2.lvd142m', 'MODEL_KWARGS': {'img_size': 224}, 'NORM_MEAN': [0.485, 0.456, 0.406], 'NORM_STD': [0.229, 0.224, 0.225]} extra env {}
+2026-10-10 02:56:29 DONE run43-dinov2-b14 in 3.81 h, probs-run43-dinov2-b14.npz and submission-run43-dinov2-b14.csv are ready
+2026-10-10 02:56:29 START run42-clip-datacompxl overrides {'RUN_TAG': 'run42-clip-datacompxl', 'MODEL_NAME': 'vit_base_patch16_clip_224.datacompxl', 'NORM_MEAN': [0.48145466, 0.4578275, 0.40821073], 'NORM_STD': [0.26862954, 0.26130258, 0.27577711]} extra env {}
+2026-10-10 05:56:55 DONE run42-clip-datacompxl in 3.01 h, probs-run42-clip-datacompxl.npz and submission-run42-clip-datacompxl.csv are ready
+2026-10-10 05:56:56 START run40-clip-metaclip overrides {'RUN_TAG': 'run40-clip-metaclip', 'MODEL_NAME': 'vit_base_patch16_clip_224.metaclip_2pt5b', 'NORM_MEAN': [0.48145466, 0.4578275, 0.40821073], 'NORM_STD': [0.26862954, 0.26130258, 0.27577711]} extra env {}
+2026-10-10 08:28:28 DONE run40-clip-metaclip in 2.53 h, probs-run40-clip-metaclip.npz and submission-run40-clip-metaclip.csv are ready
+2026-10-10 08:28:28 START run45-clip-openai-ftin12k overrides {'RUN_TAG': 'run45-clip-openai-ftin12k', 'MODEL_NAME': 'vit_base_patch16_clip_224.openai_ft_in12k_in1k', 'NORM_MEAN': [0.48145466, 0.4578275, 0.40821073], 'NORM_STD': [0.26862954, 0.26130258, 0.27577711]} extra env {}
+2026-10-10 10:41:43 DONE run45-clip-openai-ftin12k in 2.22 h, probs-run45-clip-openai-ftin12k.npz and submission-run45-clip-openai-ftin12k.csv are ready
+2026-10-10 10:41:43 START run59-dinov3-b16-seed2 overrides {'RUN_TAG': 'run59-dinov3-b16-seed2', 'SEED_OFFSET': 2, 'MODEL_NAME': 'vit_base_patch16_dinov3.lvd1689m', 'MODEL_KWARGS': {'img_size': 224}, 'NORM_MEAN': [0.485, 0.456, 0.406], 'NORM_STD': [0.229, 0.224, 0.225]} extra env {}
+2026-10-10 13:21:52 DONE run59-dinov3-b16-seed2 in 2.67 h, probs-run59-dinov3-b16-seed2.npz and submission-run59-dinov3-b16-seed2.csv are ready
+2026-10-10 13:21:52 START run60-convnext-base-dinov3 overrides {'RUN_TAG': 'run60-convnext-base-dinov3', 'SEED_OFFSET': 1, 'MODEL_NAME': 'convnext_base.dinov3_lvd1689m', 'LAYER_DECAY': None, 'NORM_MEAN': [0.485, 0.456, 0.406], 'NORM_STD': [0.229, 0.224, 0.225]} extra env {}
+2026-10-10 16:06:07 DONE run60-convnext-base-dinov3 in 2.74 h, probs-run60-convnext-base-dinov3.npz and submission-run60-convnext-base-dinov3.csv are ready
+2026-10-10 16:06:07 START run61-dinov2-b14-seed2 overrides {'RUN_TAG': 'run61-dinov2-b14-seed2', 'SEED_OFFSET': 2, 'MODEL_NAME': 'vit_base_patch14_dinov2.lvd142m', 'MODEL_KWARGS': {'img_size': 224}, 'NORM_MEAN': [0.485, 0.456, 0.406], 'NORM_STD': [0.229, 0.224, 0.225]} extra env {}
+2026-10-10 18:53:23 DONE run61-dinov2-b14-seed2 in 2.79 h, probs-run61-dinov2-b14-seed2.npz and submission-run61-dinov2-b14-seed2.csv are ready
+2026-10-10 18:53:23 START run55-dinov3-large overrides {'RUN_TAG': 'run55-dinov3-large', 'SEED_OFFSET': 1, 'MODEL_NAME': 'vit_large_patch16_dinov3.lvd1689m', 'MODEL_KWARGS': {'img_size': 224}, 'BATCH_SIZE': 16, 'ACCUM_STEPS': 2, 'LAYER_DECAY': 0.85, 'FIRST_EPOCH_TIME_LIMIT_S': None, 'NORM_MEAN': [0.485, 0.456, 0.406], 'NORM_STD': [0.229, 0.224, 0.225]} extra env {}
+2026-10-11 03:49:02 DONE run55-dinov3-large in 8.93 h, probs-run55-dinov3-large.npz and submission-run55-dinov3-large.csv are ready
+2026-10-11 03:49:02 START run36-siglip2-seed2 overrides {'RUN_TAG': 'run36-siglip2-seed2', 'SEED_OFFSET': 2} extra env {}
+2026-10-11 06:17:59 DONE run36-siglip2-seed2 in 2.48 h, probs-run36-siglip2-seed2.npz and submission-run36-siglip2-seed2.csv are ready
+2026-10-11 06:17:59 START run46-siglip2-lr5e-5 overrides {'RUN_TAG': 'run46-siglip2-lr5e-5', 'SEED_OFFSET': 1, 'LR': 5e-05} extra env {}
+2026-10-11 08:46:23 DONE run46-siglip2-lr5e-5 in 2.47 h, probs-run46-siglip2-lr5e-5.npz and submission-run46-siglip2-lr5e-5.csv are ready
+2026-10-11 08:46:23 START run47-siglip2-lr2e-5 overrides {'RUN_TAG': 'run47-siglip2-lr2e-5', 'SEED_OFFSET': 1, 'LR': 2e-05} extra env {}
+2026-10-11 11:14:58 DONE run47-siglip2-lr2e-5 in 2.48 h, probs-run47-siglip2-lr2e-5.npz and submission-run47-siglip2-lr2e-5.csv are ready
+2026-10-11 11:14:58 START run48-siglip2-layerdecay085 overrides {'RUN_TAG': 'run48-siglip2-layerdecay085', 'SEED_OFFSET': 1, 'LAYER_DECAY': 0.85} extra env {}
+2026-10-11 13:42:41 DONE run48-siglip2-layerdecay085 in 2.46 h, probs-run48-siglip2-layerdecay085.npz and submission-run48-siglip2-layerdecay085.csv are ready
+2026-10-11 13:42:41 START run49-siglip2-droppath01 overrides {'RUN_TAG': 'run49-siglip2-droppath01', 'SEED_OFFSET': 1, 'DROP_PATH_RATE': 0.1} extra env {}
+2026-10-11 16:11:06 DONE run49-siglip2-droppath01 in 2.47 h, probs-run49-siglip2-droppath01.npz and submission-run49-siglip2-droppath01.csv are ready
+2026-10-11 16:11:06 START run50-siglip2-ce-nofocal overrides {'RUN_TAG': 'run50-siglip2-ce-nofocal', 'SEED_OFFSET': 1, 'USE_FOCAL_LOSS': False} extra env {}
+2026-10-11 18:39:56 DONE run50-siglip2-ce-nofocal in 2.48 h, probs-run50-siglip2-ce-nofocal.npz and submission-run50-siglip2-ce-nofocal.csv are ready
+2026-10-11 18:39:56 START run51-siglip2-wd005 overrides {'RUN_TAG': 'run51-siglip2-wd005', 'SEED_OFFSET': 1, 'WEIGHT_DECAY': 0.05} extra env {}
+2026-10-11 21:08:59 DONE run51-siglip2-wd005 in 2.48 h, probs-run51-siglip2-wd005.npz and submission-run51-siglip2-wd005.csv are ready
+2026-10-11 21:08:59 START run52-siglip2-ep15 overrides {'RUN_TAG': 'run52-siglip2-ep15', 'SEED_OFFSET': 1, 'NUM_EPOCHS': 15} extra env {}
+2026-10-11 22:23:35 DONE run52-siglip2-ep15 in 1.24 h, probs-run52-siglip2-ep15.npz and submission-run52-siglip2-ep15.csv are ready
+2026-10-11 22:23:35 START run53-siglip2-large-256 overrides {'RUN_TAG': 'run53-siglip2-large-256', 'SEED_OFFSET': 1, 'MODEL_NAME': 'vit_large_patch16_siglip_256.v2_webli', 'IMG_SIZE': 256, 'TTA_SCALES': [256], 'BATCH_SIZE': 16, 'ACCUM_STEPS': 2, 'LAYER_DECAY': 0.85, 'FIRST_EPOCH_TIME_LIMIT_S': None} extra env {}
+2026-10-11 22:29:51 FAILED run53-siglip2-large-256 (exit code 1, probs file missing), see queue-run53-siglip2-large-256.log, moving on
+2026-10-11 22:29:51 START run54-clip-large-openai overrides {'RUN_TAG': 'run54-clip-large-openai', 'SEED_OFFSET': 1, 'MODEL_NAME': 'vit_large_patch14_clip_224.openai', 'BATCH_SIZE': 16, 'ACCUM_STEPS': 2, 'LAYER_DECAY': 0.85, 'FIRST_EPOCH_TIME_LIMIT_S': None, 'NORM_MEAN': [0.48145466, 0.4578275, 0.40821073], 'NORM_STD': [0.26862954, 0.26130258, 0.27577711]} extra env {}
+2026-10-11 22:36:07 FAILED run54-clip-large-openai (exit code 1, probs file missing), see queue-run54-clip-large-openai.log, moving on
+2026-10-11 22:36:07 START run56-so400m-siglip2 overrides {'RUN_TAG': 'run56-so400m-siglip2', 'SEED_OFFSET': 1, 'MODEL_NAME': 'vit_so400m_patch14_siglip_224.v2_webli', 'BATCH_SIZE': 8, 'ACCUM_STEPS': 4, 'LAYER_DECAY': 0.85, 'FIRST_EPOCH_TIME_LIMIT_S': None} extra env {}
+2026-10-11 22:42:21 FAILED run56-so400m-siglip2 (exit code 1, probs file missing), see queue-run56-so400m-siglip2.log, moving on
+2026-10-11 22:42:21 START run57-eva02-large overrides {'RUN_TAG': 'run57-eva02-large', 'SEED_OFFSET': 1, 'MODEL_NAME': 'eva02_large_patch14_224.mim_m38m', 'BATCH_SIZE': 16, 'ACCUM_STEPS': 2, 'LAYER_DECAY': 0.85, 'FIRST_EPOCH_TIME_LIMIT_S': None, 'NORM_MEAN': [0.48145466, 0.4578275, 0.40821073], 'NORM_STD': [0.26862954, 0.26130258, 0.27577711]} extra env {}
+2026-10-11 22:48:41 FAILED run57-eva02-large (exit code 1, probs file missing), see queue-run57-eva02-large.log, moving on
+2026-10-11 22:48:41 START run58-siglip2-base-384 overrides {'RUN_TAG': 'run58-siglip2-base-384', 'SEED_OFFSET': 1, 'MODEL_NAME': 'vit_base_patch16_siglip_384.v2_webli', 'IMG_SIZE': 384, 'TTA_SCALES': [384], 'BATCH_SIZE': 16, 'ACCUM_STEPS': 2, 'FIRST_EPOCH_TIME_LIMIT_S': None} extra env {}
+2026-10-11 22:56:06 FAILED run58-siglip2-base-384 (exit code 1, probs file missing), see queue-run58-siglip2-base-384.log, moving on
+2026-10-11 22:56:07 START run62-pe-core-base overrides {'RUN_TAG': 'run62-pe-core-base', 'SEED_OFFSET': 1, 'MODEL_NAME': 'vit_pe_core_base_patch16_224.fb', 'NORM_MEAN': [0.5, 0.5, 0.5], 'NORM_STD': [0.5, 0.5, 0.5]} extra env {}
+2026-10-11 23:02:16 FAILED run62-pe-core-base (exit code 1, probs file missing), see queue-run62-pe-core-base.log, moving on
+2026-10-11 23:02:16 START run63-eva02-base-clip overrides {'RUN_TAG': 'run63-eva02-base-clip', 'SEED_OFFSET': 1, 'MODEL_NAME': 'eva02_base_patch16_clip_224.merged2b', 'NORM_MEAN': [0.48145466, 0.4578275, 0.40821073], 'NORM_STD': [0.26862954, 0.26130258, 0.27577711]} extra env {}
+2026-10-11 23:08:25 FAILED run63-eva02-base-clip (exit code 1, probs file missing), see queue-run63-eva02-base-clip.log, moving on
+2026-10-11 23:08:25 START run64-siglip2-base-gap overrides {'RUN_TAG': 'run64-siglip2-base-gap', 'SEED_OFFSET': 1, 'MODEL_NAME': 'vit_base_patch16_siglip_gap_224.v2_webli'} extra env {}
+2026-10-11 23:14:34 FAILED run64-siglip2-base-gap (exit code 1, probs file missing), see queue-run64-siglip2-base-gap.log, moving on
+2026-10-11 23:14:34 START run65-dinov3-b16-eupe overrides {'RUN_TAG': 'run65-dinov3-b16-eupe', 'SEED_OFFSET': 1, 'MODEL_NAME': 'vit_base_patch16_dinov3_qkvb.eupe_lvd1689m', 'MODEL_KWARGS': {'img_size': 224}, 'NORM_MEAN': [0.485, 0.456, 0.406], 'NORM_STD': [0.229, 0.224, 0.225]} extra env {}
+2026-10-11 23:20:44 FAILED run65-dinov3-b16-eupe (exit code 1, probs file missing), see queue-run65-dinov3-b16-eupe.log, moving on
+2026-10-11 23:20:44 START run66-dinov2-b14-reg4 overrides {'RUN_TAG': 'run66-dinov2-b14-reg4', 'SEED_OFFSET': 1, 'MODEL_NAME': 'vit_base_patch14_reg4_dinov2.lvd142m', 'MODEL_KWARGS': {'img_size': 224}, 'NORM_MEAN': [0.485, 0.456, 0.406], 'NORM_STD': [0.229, 0.224, 0.225]} extra env {}
+2026-10-11 23:26:53 FAILED run66-dinov2-b14-reg4 (exit code 1, probs file missing), see queue-run66-dinov2-b14-reg4.log, moving on
+2026-10-11 23:26:53 START run67-siglip2-base-256 overrides {'RUN_TAG': 'run67-siglip2-base-256', 'SEED_OFFSET': 1, 'MODEL_NAME': 'vit_base_patch16_siglip_256.v2_webli', 'IMG_SIZE': 256, 'TTA_SCALES': [256]} extra env {}
+2026-10-11 23:33:02 FAILED run67-siglip2-base-256 (exit code 1, probs file missing), see queue-run67-siglip2-base-256.log, moving on
+2026-10-11 23:33:03 START run68-siglip2-focal-gamma1 overrides {'RUN_TAG': 'run68-siglip2-focal-gamma1', 'SEED_OFFSET': 1, 'FOCAL_GAMMA': 1.0} extra env {}
+2026-10-12 01:59:58 DONE run68-siglip2-focal-gamma1 in 2.45 h, probs-run68-siglip2-focal-gamma1.npz and submission-run68-siglip2-focal-gamma1.csv are ready
+2026-10-12 01:59:58 START run69-siglip2-focal-alpha overrides {'RUN_TAG': 'run69-siglip2-focal-alpha', 'SEED_OFFSET': 1, 'FOCAL_USE_ALPHA': True} extra env {}
+2026-10-12 04:28:02 DONE run69-siglip2-focal-alpha in 2.47 h, probs-run69-siglip2-focal-alpha.npz and submission-run69-siglip2-focal-alpha.csv are ready
+2026-10-12 04:28:02 START run70-siglip2-layerdecay065 overrides {'RUN_TAG': 'run70-siglip2-layerdecay065', 'SEED_OFFSET': 1, 'LAYER_DECAY': 0.65} extra env {}

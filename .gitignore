@@ -1,0 +1,14 @@
+# Competition data and large artifacts are not part of this archive
+data/
+archive/
+*.pt
+*.pth
+*.ckpt
+*.safetensors
+.venv*/
+venv/
+__pycache__/
+.ipynb_checkpoints/
+
+# Per image statistics with the training labels (organizer data)
+scratchpad/img_stats.csv

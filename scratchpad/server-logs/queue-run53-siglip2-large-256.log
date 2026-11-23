@@ -1,0 +1,495 @@
+[NbConvertApp] Converting notebook datascape-2026-cv-notebook-l40.ipynb to notebook
+[IPKernelApp] WARNING | Kernel is running over TCP without encryption. All communication (including code and outputs) is sent in plain text and is susceptible to eavesdropping. Use IPC transport or launch with kernel manager-provisioned CurveZMQ keys to enable transport encryption.
+Traceback (most recent call last):
+  File "/home/user/ds-venv/bin/jupyter-nbconvert", line 10, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "/home/user/ds-venv/lib/python3.12/site-packages/jupyter_core/application.py", line 284, in launch_instance
+    super().launch_instance(argv=argv, **kwargs)
+  File "/home/user/ds-venv/lib/python3.12/site-packages/traitlets/config/application.py", line 1080, in launch_instance
+    app.start()
+  File "/home/user/ds-venv/lib/python3.12/site-packages/nbconvert/nbconvertapp.py", line 420, in start
+    self.convert_notebooks()
+  File "/home/user/ds-venv/lib/python3.12/site-packages/nbconvert/nbconvertapp.py", line 597, in convert_notebooks
+    self.convert_single_notebook(notebook_filename)
+  File "/home/user/ds-venv/lib/python3.12/site-packages/nbconvert/nbconvertapp.py", line 563, in convert_single_notebook
+    output, resources = self.export_single_notebook(
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/ds-venv/lib/python3.12/site-packages/nbconvert/nbconvertapp.py", line 487, in export_single_notebook
+    output, resources = self.exporter.from_filename(
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/ds-venv/lib/python3.12/site-packages/nbconvert/exporters/exporter.py", line 201, in from_filename
+    return self.from_file(f, resources=resources, **kw)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/ds-venv/lib/python3.12/site-packages/nbconvert/exporters/exporter.py", line 220, in from_file
+    return self.from_notebook_node(
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/ds-venv/lib/python3.12/site-packages/nbconvert/exporters/notebook.py", line 36, in from_notebook_node
+    nb_copy, resources = super().from_notebook_node(nb, resources, **kw)
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/ds-venv/lib/python3.12/site-packages/nbconvert/exporters/exporter.py", line 154, in from_notebook_node
+    nb_copy, resources = self._preprocess(nb_copy, resources)
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/ds-venv/lib/python3.12/site-packages/nbconvert/exporters/exporter.py", line 353, in _preprocess
+    nbc, resc = preprocessor(nbc, resc)
+                ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/ds-venv/lib/python3.12/site-packages/nbconvert/preprocessors/base.py", line 48, in __call__
+    return self.preprocess(nb, resources)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/ds-venv/lib/python3.12/site-packages/nbconvert/preprocessors/execute.py", line 103, in preprocess
+    self.preprocess_cell(cell, resources, index)
+  File "/home/user/ds-venv/lib/python3.12/site-packages/nbconvert/preprocessors/execute.py", line 124, in preprocess_cell
+    cell = self.execute_cell(cell, index, store_history=True)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/ds-venv/lib/python3.12/site-packages/jupyter_core/utils/__init__.py", line 165, in wrapped
+    return loop.run_until_complete(inner)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/.local/share/uv/python/cpython-3.12.15-linux-x86_64-gnu/lib/python3.12/asyncio/base_events.py", line 691, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/home/user/ds-venv/lib/python3.12/site-packages/nbclient/client.py", line 1062, in async_execute_cell
+    await self._check_raise_for_error(cell, cell_index, exec_reply)
+  File "/home/user/ds-venv/lib/python3.12/site-packages/nbclient/client.py", line 918, in _check_raise_for_error
+    raise CellExecutionError.from_cell_and_msg(cell, exec_reply_content)
+nbclient.exceptions.CellExecutionError: An error occurred while executing the following cell:
+------------------
+# Settings for this cell. PARALLEL_FOLDS runs one training process per visible GPU, each
+# pinned to its own GPU through CUDA_VISIBLE_DEVICES and given a share of the folds, so
+# the two Kaggle T4s train different folds at the same time with no cross-GPU traffic.
+# With a single GPU (or False) one process trains all folds in order. NUM_WORKERS is the
+# DataLoader worker count per process, so 2 processes x 6 workers uses 12 of the lab server's 80 CPUs.
+PARALLEL_FOLDS = True
+NUM_WORKERS = 6
+# True keeps the folds that already finished in this run's folder and trains only the rest, so
+# a run interrupted by sleep or a crash continues. A fold interrupted halfway starts again from
+# epoch 1. The settings must be unchanged, otherwise it stops with a message.
+RESUME = True
+
+assert not USE_MIXUP, "cv_worker.py does not implement mixup/cutmix, set USE_MIXUP = False"
+for needed in ("cv_worker.py", "img_utils.py", "build_cache.py"):
+    assert Path(needed).exists(), f"Run the {needed} cell above first"
+
+work_dir = Path(OUTPUT_DIR) / f"cv-{RUN_TAG}{'-sanity' if SANITY_CHECK else ''}"
+work_dir.mkdir(parents=True, exist_ok=True)
+if not RESUME:
+    for stale in work_dir.glob("*"):
+        if stale.is_file():
+            stale.unlink()
+
+# One-time image cache, see USE_IMAGE_CACHE in the config cell. The file name carries a
+# hash of the image list and IMG_SIZE, so a changed list or size builds a fresh cache.
+cache_path = None
+if USE_IMAGE_CACHE:
+    paths_text = "\n".join(fold_df["filepath"])
+    cache_key = hashlib.md5(f"{IMG_SIZE}\n{paths_text}".encode()).hexdigest()[:10]
+    cache_path = Path(CACHE_DIR) / f"imgcache_{IMG_SIZE}_{cache_key}.npy"
+    if cache_path.exists():
+        print("Using existing image cache", cache_path)
+    else:
+        need_gb = len(fold_df) * IMG_SIZE * IMG_SIZE * 3 * 1.1 / 1e9
+        free_gb = shutil.disk_usage(CACHE_DIR).free / 1e9
+        assert free_gb > need_gb, f"Image cache needs about {need_gb:.1f} GB in {CACHE_DIR}, only {free_gb:.1f} GB free"
+        (work_dir / "cache_paths.txt").write_text(paths_text)
+        print(f"Building image cache ({need_gb:.1f} GB, one time per session)...")
+        build_start = time.time()
+        build = subprocess.run(
+            [sys.executable, "build_cache.py", "--paths-file", str(work_dir / "cache_paths.txt"),
+             "--out", str(cache_path), "--size", str(IMG_SIZE), "--procs", str(min(12, os.cpu_count() or 2))],
+            capture_output=True, text=True,
+        )
+        print(build.stdout[-500:])
+        if build.returncode != 0:
+            raise RuntimeError("build_cache.py failed\n" + build.stderr[-2000:])
+        print(f"Image cache built in {time.time() - build_start:.0f}s")
+
+cfg = {
+    "SEED": SEED, "CLASSES": CLASSES, "IMG_SIZE": IMG_SIZE, "EPOCHS_TO_RUN": EPOCHS_TO_RUN,
+    "BATCH_SIZE": BATCH_SIZE, "NUM_WORKERS": NUM_WORKERS, "MODEL_NAME": MODEL_NAME,
+    "MODEL_KWARGS": MODEL_KWARGS, "LAYER_DECAY": LAYER_DECAY,
+    "NORM_MEAN": NORM_MEAN, "NORM_STD": NORM_STD,
+    "USE_AMP": USE_AMP, "ACCUM_STEPS": ACCUM_STEPS, "SEED_OFFSET": SEED_OFFSET,
+    "DROP_PATH_RATE": DROP_PATH_RATE, "USE_FOCAL_LOSS": USE_FOCAL_LOSS,
+    "FOCAL_USE_ALPHA": FOCAL_USE_ALPHA, "FOCAL_GAMMA": FOCAL_GAMMA, "LR": LR,
+    "WEIGHT_DECAY": WEIGHT_DECAY, "EARLY_STOP_PATIENCE": EARLY_STOP_PATIENCE,
+    "TTA_SCALES": TTA_SCALES, "FIRST_EPOCH_TIME_LIMIT_S": FIRST_EPOCH_TIME_LIMIT_S,
+    "n_folds_total": len(fold_splits),
+    "CACHE_PATH": str(cache_path) if cache_path else None,
+    "SHIFT_AUG": SHIFT_AUG if USE_SHIFT_AUG else None,
+}
+cfg_text = json.dumps(cfg)
+if RESUME and (work_dir / "cfg.json").exists():
+    assert json.loads((work_dir / "cfg.json").read_text()) == json.loads(cfg_text), (
+        "RESUME is on but the settings differ from the earlier run in this folder, change RUN_TAG or set RESUME = False")
+(work_dir / "cfg.json").write_text(cfg_text)
+fold_df.to_csv(work_dir / "fold_df.csv", index=False)
+split_arrays = {}
+for i, (tr_idx, va_idx) in enumerate(fold_splits):
+    split_arrays[f"train_{i}"] = tr_idx
+    split_arrays[f"val_{i}"] = va_idx
+np.savez(work_dir / "splits.npz", **split_arrays)
+
+done_folds = [i for i in range(len(fold_splits)) if RESUME and (work_dir / f"fold{i}_summary.json").exists()]
+remaining = [i for i in range(len(fold_splits)) if i not in done_folds]
+if done_folds:
+    print(f"RESUME is on, folds already finished and skipped {[f + 1 for f in done_folds]}")
+n_gpus = torch.cuda.device_count()
+n_procs = n_gpus if (PARALLEL_FOLDS and n_gpus > 1) else 1
+n_procs = max(1, min(n_procs, len(remaining)))
+assignments = [a for a in (remaining[w::n_procs] for w in range(n_procs)) if a]
+# Optional manual split for GPUs of different speed (a shared server). DS_FOLD_ASSIGNMENT lists the
+# 1-based folds of each worker, workers separated by ";", for example "1,3,5;2;4" gives worker 0
+# folds 1, 3 and 5, worker 1 fold 2 and worker 2 fold 4. Worker w runs on the w-th GPU of
+# CUDA_VISIBLE_DEVICES. Folds that already finished are skipped, the rest must be covered once.
+_manual = os.environ.get("DS_FOLD_ASSIGNMENT")
+if _manual:
+    assignments = [[int(f) - 1 for f in group.split(",") if f.strip() and int(f) - 1 in remaining] for group in _manual.split(";")]
+    assignments = [a for a in assignments if a]
+    assert sorted(f for a in assignments for f in a) == sorted(remaining), (
+        f"DS_FOLD_ASSIGNMENT must cover every remaining fold {[f + 1 for f in remaining]} exactly once")
+    assert len(assignments) <= max(1, n_gpus), f"DS_FOLD_ASSIGNMENT has {len(assignments)} workers but only {n_gpus} GPU(s) are visible"
+n_procs = len(assignments)
+print(f"{n_gpus} GPU(s) visible, {n_procs} training process(es), fold assignment {[[f + 1 for f in fl] for fl in assignments]}")
+print(f"model {MODEL_NAME} | LR {LR} | layer decay {LAYER_DECAY} | drop_path_rate={DROP_PATH_RATE} | "
+      f"shift augmentation {'on' if USE_SHIFT_AUG else 'off'} | "
+      f"image cache {'on' if cache_path else 'off'} | logs and results in {work_dir}")
+
+worker_path = str(Path("cv_worker.py").resolve())
+workers = []
+for w, folds in enumerate(assignments):
+    env = {**os.environ, "PYTHONUNBUFFERED": "1"}
+    if n_procs > 1:
+        # Pin worker w to the w-th GPU of the parent's visible list, so a CUDA_VISIBLE_DEVICES
+        # set before starting the notebook (for example "1,2" on a shared server) is respected.
+        _visible = [g.strip() for g in os.environ.get("CUDA_VISIBLE_DEVICES", "").split(",") if g.strip()]
+        env["CUDA_VISIBLE_DEVICES"] = _visible[w] if _visible else str(w)
+    log_path = work_dir / f"worker{w}.log"
+    log_file = open(log_path, "w")
+    proc = subprocess.Popen(
+        [sys.executable, worker_path, "--work-dir", str(work_dir), "--folds", ",".join(map(str, folds))],
+        env=env, stdout=log_file, stderr=subprocess.STDOUT,
+    )
+    workers.append({"proc": proc, "log_path": log_path, "log_file": log_file, "pos": 0})
+
+
+def drain_logs(final=False):
+    """Print any new complete log lines from each worker (all remaining text if final)."""
+    for w, info in enumerate(workers):
+        with open(info["log_path"], "rb") as f:
+            f.seek(info["pos"])
+            data = f.read()
+        cut = len(data) if final else data.rfind(b"\n") + 1
+        info["pos"] += cut
+        for line in data[:cut].decode(errors="replace").splitlines():
+            print(f"[gpu{w}] {line}" if n_procs > 1 else line)
+
+
+try:
+    while True:
+        drain_logs()
+        codes = [info["proc"].poll() for info in workers]
+        if any(c not in (None, 0) for c in codes) or all(c == 0 for c in codes):
+            break
+        time.sleep(5)
+finally:
+    # Also runs if the cell is interrupted, so no orphan process keeps a GPU busy.
+    for info in workers:
+        if info["proc"].poll() is None:
+            info["proc"].kill()
+        info["proc"].wait()
+        info["log_file"].close()
+    drain_logs(final=True)
+
+exit_codes = [info["proc"].returncode for info in workers]
+if any(c != 0 for c in exit_codes):
+    raise RuntimeError(f"Training process(es) failed with exit codes {exit_codes}, see the log lines above")
+
+all_fold_checkpoints = []  # (val_f1, state_dict, fold_idx) for each fold's best checkpoint
+fold_results = []  # per-fold summary: fold, best_val_f1, best_epoch
+
+oof_targets = np.full(len(fold_df), -1, dtype=int)
+oof_preds_single = np.full(len(fold_df), -1, dtype=int)  # no TTA, straight from run_epoch
+oof_probs_flip = np.zeros((len(fold_df), NUM_CLASSES), dtype=np.float32)  # single scale + hflip
+oof_probs_tta = np.zeros((len(fold_df), NUM_CLASSES), dtype=np.float32)  # multi-scale + hflip
+
+for fold_idx in range(len(fold_splits)):
+    summary = json.loads((work_dir / f"fold{fold_idx}_summary.json").read_text())
+    oof = np.load(work_dir / f"fold{fold_idx}_oof.npz")
+    val_idx = oof["val_idx"]
+    oof_targets[val_idx] = oof["targets"]
+    oof_preds_single[val_idx] = oof["preds_single"]
+    oof_probs_flip[val_idx] = oof["probs_flip"]
+    oof_probs_tta[val_idx] = oof["probs_tta"]
+    state = torch.load(work_dir / f"fold{fold_idx}_ckpt.pt", map_location="cpu")
+    all_fold_checkpoints.append((summary["best_val_f1"], state, fold_idx))
+    fold_results.append(summary)
+
+assert (oof_targets >= 0).all(), "Some samples never got an out-of-fold prediction"
+
+fold_f1s = np.array([r["best_val_f1"] for r in fold_results])
+print(f"\n{'=' * 20} K-Fold Summary {'=' * 20}")
+for r in fold_results:
+    print(f"  fold {r['fold'] + 1}: val macro F1 = {r['best_val_f1']:.4f} (best epoch {r['best_epoch']})")
+print(f"Mean per-fold macro F1: {fold_f1s.mean():.4f} +/- {fold_f1s.std():.4f}")
+
+topk_checkpoints = [(f1, state) for f1, state, _ in all_fold_checkpoints]
+topk_checkpoints.sort(key=lambda x: x[0], reverse=True)
+
+------------------
+
+----- stdout -----
+Using existing image cache /home/user/ds-cache/imgcache_256_de2435b15c.npy
+----- stdout -----
+3 GPU(s) visible, 3 training process(es), fold assignment [[1, 4], [2, 5], [3]]
+model vit_large_patch16_siglip_256.v2_webli | LR 3e-05 | layer decay 0.85 | drop_path_rate=0.0 | shift augmentation off | image cache on | logs and results in /home/user/datascape-2026/cv-run53-siglip2-large-256
+----- stdout -----
+[gpu0] Worker started on NVIDIA L40 for folds [1, 4]
+[gpu0] [fold 1/5] started, batch 16 x accumulation 2 = 32, mixed precision on, seed offset 1
+[gpu0] [fold 1/5] data from image cache, shift augmentation off
+[gpu0] /home/user/ds-venv/lib/python3.12/site-packages/torch/utils/data/sampler.py:271: UserWarning: The given NumPy array is not writable, and PyTorch does not support non-writable tensors. This means writing to this tensor will result in undefined behavior. You may want to copy the array to protect its data or make it writable before converting it to a tensor. This type of warning will be suppressed for the rest of this program. (Triggered internally at ../torch/csrc/utils/tensor_numpy.cpp:206.)
+[gpu0]   weights_tensor = torch.as_tensor(weights, dtype=torch.double)
+[gpu1] Worker started on NVIDIA L40 for folds [2, 5]
+[gpu1] [fold 2/5] started, batch 16 x accumulation 2 = 32, mixed precision on, seed offset 1
+[gpu1] [fold 2/5] data from image cache, shift augmentation off
+[gpu1] /home/user/ds-venv/lib/python3.12/site-packages/torch/utils/data/sampler.py:271: UserWarning: The given NumPy array is not writable, and PyTorch does not support non-writable tensors. This means writing to this tensor will result in undefined behavior. You may want to copy the array to protect its data or make it writable before converting it to a tensor. This type of warning will be suppressed for the rest of this program. (Triggered internally at ../torch/csrc/utils/tensor_numpy.cpp:206.)
+[gpu1]   weights_tensor = torch.as_tensor(weights, dtype=torch.double)
+[gpu2] Worker started on NVIDIA L40 for folds [3]
+[gpu2] [fold 3/5] started, batch 16 x accumulation 2 = 32, mixed precision on, seed offset 1
+[gpu2] [fold 3/5] data from image cache, shift augmentation off
+[gpu2] /home/user/ds-venv/lib/python3.12/site-packages/torch/utils/data/sampler.py:271: UserWarning: The given NumPy array is not writable, and PyTorch does not support non-writable tensors. This means writing to this tensor will result in undefined behavior. You may want to copy the array to protect its data or make it writable before converting it to a tensor. This type of warning will be suppressed for the rest of this program. (Triggered internally at ../torch/csrc/utils/tensor_numpy.cpp:206.)
+[gpu2]   weights_tensor = torch.as_tensor(weights, dtype=torch.double)
+----- stdout -----
+[gpu0] '[Errno -3] Temporary failure in name resolution' thrown while requesting HEAD https://huggingface.co/timm/vit_large_patch16_siglip_256.v2_webli/resolve/main/model.safetensors
+[gpu0] Retrying in 1s [Retry 1/5].
+[gpu1] '[Errno -3] Temporary failure in name resolution' thrown while requesting HEAD https://huggingface.co/timm/vit_large_patch16_siglip_256.v2_webli/resolve/main/model.safetensors
+[gpu1] Retrying in 1s [Retry 1/5].
+[gpu2] '[Errno -3] Temporary failure in name resolution' thrown while requesting HEAD https://huggingface.co/timm/vit_large_patch16_siglip_256.v2_webli/resolve/main/model.safetensors
+[gpu2] Retrying in 1s [Retry 1/5].
+----- stdout -----
+[gpu0] '[Errno -3] Temporary failure in name resolution' thrown while requesting HEAD https://huggingface.co/timm/vit_large_patch16_siglip_256.v2_webli/resolve/main/model.safetensors
+[gpu0] Retrying in 2s [Retry 2/5].
+[gpu1] '[Errno -3] Temporary failure in name resolution' thrown while requesting HEAD https://huggingface.co/timm/vit_large_patch16_siglip_256.v2_webli/resolve/main/model.safetensors
+[gpu1] Retrying in 2s [Retry 2/5].
+[gpu2] '[Errno -3] Temporary failure in name resolution' thrown while requesting HEAD https://huggingface.co/timm/vit_large_patch16_siglip_256.v2_webli/resolve/main/model.safetensors
+[gpu2] Retrying in 2s [Retry 2/5].
+----- stdout -----
+[gpu0] '[Errno -3] Temporary failure in name resolution' thrown while requesting HEAD https://huggingface.co/timm/vit_large_patch16_siglip_256.v2_webli/resolve/main/model.safetensors
+[gpu0] Retrying in 4s [Retry 3/5].
+[gpu1] '[Errno -3] Temporary failure in name resolution' thrown while requesting HEAD https://huggingface.co/timm/vit_large_patch16_siglip_256.v2_webli/resolve/main/model.safetensors
+[gpu1] Retrying in 4s [Retry 3/5].
+[gpu2] '[Errno -3] Temporary failure in name resolution' thrown while requesting HEAD https://huggingface.co/timm/vit_large_patch16_siglip_256.v2_webli/resolve/main/model.safetensors
+[gpu2] Retrying in 4s [Retry 3/5].
+----- stdout -----
+[gpu0] '[Errno -3] Temporary failure in name resolution' thrown while requesting HEAD https://huggingface.co/timm/vit_large_patch16_siglip_256.v2_webli/resolve/main/model.safetensors
+[gpu0] Retrying in 8s [Retry 4/5].
+[gpu1] '[Errno -3] Temporary failure in name resolution' thrown while requesting HEAD https://huggingface.co/timm/vit_large_patch16_siglip_256.v2_webli/resolve/main/model.safetensors
+[gpu1] Retrying in 8s [Retry 4/5].
+[gpu2] '[Errno -3] Temporary failure in name resolution' thrown while requesting HEAD https://huggingface.co/timm/vit_large_patch16_siglip_256.v2_webli/resolve/main/model.safetensors
+[gpu2] Retrying in 8s [Retry 4/5].
+----- stdout -----
+[gpu0] '[Errno -3] Temporary failure in name resolution' thrown while requesting HEAD https://huggingface.co/timm/vit_large_patch16_siglip_256.v2_webli/resolve/main/model.safetensors
+[gpu0] Retrying in 8s [Retry 5/5].
+[gpu1] '[Errno -3] Temporary failure in name resolution' thrown while requesting HEAD https://huggingface.co/timm/vit_large_patch16_siglip_256.v2_webli/resolve/main/model.safetensors
+[gpu1] Retrying in 8s [Retry 5/5].
+[gpu2] '[Errno -3] Temporary failure in name resolution' thrown while requesting HEAD https://huggingface.co/timm/vit_large_patch16_siglip_256.v2_webli/resolve/main/model.safetensors
+[gpu2] Retrying in 8s [Retry 5/5].
+----- stdout -----
+[gpu0] '[Errno -3] Temporary failure in name resolution' thrown while requesting HEAD https://huggingface.co/timm/vit_large_patch16_siglip_256.v2_webli/resolve/main/model.safetensors
+[gpu1] '[Errno -3] Temporary failure in name resolution' thrown while requesting HEAD https://huggingface.co/timm/vit_large_patch16_siglip_256.v2_webli/resolve/main/model.safetensors
+[gpu2] '[Errno -3] Temporary failure in name resolution' thrown while requesting HEAD https://huggingface.co/timm/vit_large_patch16_siglip_256.v2_webli/resolve/main/model.safetensors
+----- stdout -----
+[gpu0] '[Errno -3] Temporary failure in name resolution' thrown while requesting HEAD https://huggingface.co/timm/vit_large_patch16_siglip_256.v2_webli/resolve/main/pytorch_model.bin
+[gpu0] Retrying in 1s [Retry 1/5].
+[gpu1] '[Errno -3] Temporary failure in name resolution' thrown while requesting HEAD https://huggingface.co/timm/vit_large_patch16_siglip_256.v2_webli/resolve/main/pytorch_model.bin
+[gpu1] Retrying in 1s [Retry 1/5].
+[gpu2] '[Errno -3] Temporary failure in name resolution' thrown while requesting HEAD https://huggingface.co/timm/vit_large_patch16_siglip_256.v2_webli/resolve/main/pytorch_model.bin
+[gpu2] Retrying in 1s [Retry 1/5].
+----- stdout -----
+[gpu0] '[Errno -3] Temporary failure in name resolution' thrown while requesting HEAD https://huggingface.co/timm/vit_large_patch16_siglip_256.v2_webli/resolve/main/pytorch_model.bin
+[gpu0] Retrying in 2s [Retry 2/5].
+----- stdout -----
+[gpu1] '[Errno -3] Temporary failure in name resolution' thrown while requesting HEAD https://huggingface.co/timm/vit_large_patch16_siglip_256.v2_webli/resolve/main/pytorch_model.bin
+[gpu1] Retrying in 2s [Retry 2/5].
+[gpu2] '[Errno -3] Temporary failure in name resolution' thrown while requesting HEAD https://huggingface.co/timm/vit_large_patch16_siglip_256.v2_webli/resolve/main/pytorch_model.bin
+[gpu2] Retrying in 2s [Retry 2/5].
+----- stdout -----
+[gpu0] '[Errno -3] Temporary failure in name resolution' thrown while requesting HEAD https://huggingface.co/timm/vit_large_patch16_siglip_256.v2_webli/resolve/main/pytorch_model.bin
+[gpu0] Retrying in 4s [Retry 3/5].
+[gpu1] '[Errno -3] Temporary failure in name resolution' thrown while requesting HEAD https://huggingface.co/timm/vit_large_patch16_siglip_256.v2_webli/resolve/main/pytorch_model.bin
+[gpu1] Retrying in 4s [Retry 3/5].
+[gpu2] '[Errno -3] Temporary failure in name resolution' thrown while requesting HEAD https://huggingface.co/timm/vit_large_patch16_siglip_256.v2_webli/resolve/main/pytorch_model.bin
+[gpu2] Retrying in 4s [Retry 3/5].
+----- stdout -----
+[gpu0] '[Errno -3] Temporary failure in name resolution' thrown while requesting HEAD https://huggingface.co/timm/vit_large_patch16_siglip_256.v2_webli/resolve/main/pytorch_model.bin
+[gpu0] Retrying in 8s [Retry 4/5].
+[gpu1] '[Errno -3] Temporary failure in name resolution' thrown while requesting HEAD https://huggingface.co/timm/vit_large_patch16_siglip_256.v2_webli/resolve/main/pytorch_model.bin
+[gpu1] Retrying in 8s [Retry 4/5].
+[gpu2] '[Errno -3] Temporary failure in name resolution' thrown while requesting HEAD https://huggingface.co/timm/vit_large_patch16_siglip_256.v2_webli/resolve/main/pytorch_model.bin
+[gpu2] Retrying in 8s [Retry 4/5].
+----- stdout -----
+[gpu0] '[Errno -3] Temporary failure in name resolution' thrown while requesting HEAD https://huggingface.co/timm/vit_large_patch16_siglip_256.v2_webli/resolve/main/pytorch_model.bin
+[gpu0] Retrying in 8s [Retry 5/5].
+[gpu1] '[Errno -3] Temporary failure in name resolution' thrown while requesting HEAD https://huggingface.co/timm/vit_large_patch16_siglip_256.v2_webli/resolve/main/pytorch_model.bin
+[gpu1] Retrying in 8s [Retry 5/5].
+[gpu2] '[Errno -3] Temporary failure in name resolution' thrown while requesting HEAD https://huggingface.co/timm/vit_large_patch16_siglip_256.v2_webli/resolve/main/pytorch_model.bin
+[gpu2] Retrying in 8s [Retry 5/5].
+----- stdout -----
+[gpu0] '[Errno -3] Temporary failure in name resolution' thrown while requesting HEAD https://huggingface.co/timm/vit_large_patch16_siglip_256.v2_webli/resolve/main/pytorch_model.bin
+[gpu0] httpcore2.ConnectError: [Errno -3] Temporary failure in name resolution
+[gpu0] 
+[gpu0] The above exception was the direct cause of the following exception:
+[gpu0] 
+[gpu0] httpx2.ConnectError: [Errno -3] Temporary failure in name resolution
+[gpu0] 
+[gpu0] The above exception was the direct cause of the following exception:
+[gpu0] 
+[gpu0] Traceback (most recent call last):
+[gpu0]   File "/home/user/datascape-2026/cv_worker.py", line 399, in <module>
+[gpu0]     main()
+[gpu0]   File "/home/user/datascape-2026/cv_worker.py", line 384, in main
+[gpu0]     train_one_fold(
+[gpu0]   File "/home/user/datascape-2026/cv_worker.py", line 252, in train_one_fold
+[gpu0]     model = timm.create_model(
+[gpu0]             ^^^^^^^^^^^^^^^^^^
+[gpu0]   File "/home/user/ds-venv/lib/python3.12/site-packages/timm/models/_factory.py", line 175, in create_model
+[gpu0]     model = create_fn(
+[gpu0]             ^^^^^^^^^^
+[gpu0]   File "/home/user/ds-venv/lib/python3.12/site-packages/timm/models/vision_transformer.py", line 4193, in vit_large_patch16_siglip_256
+[gpu0]     model = _create_vision_transformer(
+[gpu0]             ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[gpu0]   File "/home/user/ds-venv/lib/python3.12/site-packages/timm/models/vision_transformer.py", line 3218, in _create_vision_transformer
+[gpu0]     return build_model_with_cfg(
+[gpu0]            ^^^^^^^^^^^^^^^^^^^^^
+[gpu0]   File "/home/user/ds-venv/lib/python3.12/site-packages/timm/models/_builder.py", line 459, in build_model_with_cfg
+[gpu0]     load_pretrained(
+[gpu0]   File "/home/user/ds-venv/lib/python3.12/site-packages/timm/models/_builder.py", line 228, in load_pretrained
+[gpu0]     state_dict = load_state_dict_from_hf(pretrained_loc, weights_only=True, cache_dir=cache_dir)
+[gpu0]                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[gpu0]   File "/home/user/ds-venv/lib/python3.12/site-packages/timm/models/_hub.py", line 252, in load_state_dict_from_hf
+[gpu0]     cached_file = hf_hub_download(
+[gpu0]                   ^^^^^^^^^^^^^^^^
+[gpu0]   File "/home/user/ds-venv/lib/python3.12/site-packages/huggingface_hub/utils/_validators.py", line 89, in _inner_fn
+[gpu0]     return fn(*args, **kwargs)
+[gpu0]            ^^^^^^^^^^^^^^^^^^^
+[gpu0]   File "/home/user/ds-venv/lib/python3.12/site-packages/huggingface_hub/utils/_http.py", line 276, in _inner
+[gpu0]     return fn(*args, **kwargs)
+[gpu0]            ^^^^^^^^^^^^^^^^^^^
+[gpu0]   File "/home/user/ds-venv/lib/python3.12/site-packages/huggingface_hub/file_download.py", line 1047, in hf_hub_download
+[gpu0]     return _hf_hub_download_to_cache_dir(
+[gpu0]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[gpu0]   File "/home/user/ds-venv/lib/python3.12/site-packages/huggingface_hub/file_download.py", line 1194, in _hf_hub_download_to_cache_dir
+[gpu0]     _raise_on_head_call_error(head_call_error, force_download, local_files_only)
+[gpu0]   File "/home/user/ds-venv/lib/python3.12/site-packages/huggingface_hub/file_download.py", line 1961, in _raise_on_head_call_error
+[gpu0]     raise LocalEntryNotFoundError(
+[gpu0] huggingface_hub.errors.LocalEntryNotFoundError: An error happened while trying to locate the file on the Hub and we cannot find the requested files in the local cache. Please check your connection and try again or make sure your Internet connection is on.
+[gpu1] '[Errno -3] Temporary failure in name resolution' thrown while requesting HEAD https://huggingface.co/timm/vit_large_patch16_siglip_256.v2_webli/resolve/main/pytorch_model.bin
+[gpu1] httpcore2.ConnectError: [Errno -3] Temporary failure in name resolution
+[gpu1] 
+[gpu1] The above exception was the direct cause of the following exception:
+[gpu1] 
+[gpu1] httpx2.ConnectError: [Errno -3] Temporary failure in name resolution
+[gpu1] 
+[gpu1] The above exception was the direct cause of the following exception:
+[gpu1] 
+[gpu1] Traceback (most recent call last):
+[gpu1]   File "/home/user/datascape-2026/cv_worker.py", line 399, in <module>
+[gpu1]     main()
+[gpu1]   File "/home/user/datascape-2026/cv_worker.py", line 384, in main
+[gpu1]     train_one_fold(
+[gpu1]   File "/home/user/datascape-2026/cv_worker.py", line 252, in train_one_fold
+[gpu1]     model = timm.create_model(
+[gpu1]             ^^^^^^^^^^^^^^^^^^
+[gpu1]   File "/home/user/ds-venv/lib/python3.12/site-packages/timm/models/_factory.py", line 175, in create_model
+[gpu1]     model = create_fn(
+[gpu1]             ^^^^^^^^^^
+[gpu1]   File "/home/user/ds-venv/lib/python3.12/site-packages/timm/models/vision_transformer.py", line 4193, in vit_large_patch16_siglip_256
+[gpu1]     model = _create_vision_transformer(
+[gpu1]             ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[gpu1]   File "/home/user/ds-venv/lib/python3.12/site-packages/timm/models/vision_transformer.py", line 3218, in _create_vision_transformer
+[gpu1]     return build_model_with_cfg(
+[gpu1]            ^^^^^^^^^^^^^^^^^^^^^
+[gpu1]   File "/home/user/ds-venv/lib/python3.12/site-packages/timm/models/_builder.py", line 459, in build_model_with_cfg
+[gpu1]     load_pretrained(
+[gpu1]   File "/home/user/ds-venv/lib/python3.12/site-packages/timm/models/_builder.py", line 228, in load_pretrained
+[gpu1]     state_dict = load_state_dict_from_hf(pretrained_loc, weights_only=True, cache_dir=cache_dir)
+[gpu1]                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[gpu1]   File "/home/user/ds-venv/lib/python3.12/site-packages/timm/models/_hub.py", line 252, in load_state_dict_from_hf
+[gpu1]     cached_file = hf_hub_download(
+[gpu1]                   ^^^^^^^^^^^^^^^^
+[gpu1]   File "/home/user/ds-venv/lib/python3.12/site-packages/huggingface_hub/utils/_validators.py", line 89, in _inner_fn
+[gpu1]     return fn(*args, **kwargs)
+[gpu1]            ^^^^^^^^^^^^^^^^^^^
+[gpu1]   File "/home/user/ds-venv/lib/python3.12/site-packages/huggingface_hub/utils/_http.py", line 276, in _inner
+[gpu1]     return fn(*args, **kwargs)
+[gpu1]            ^^^^^^^^^^^^^^^^^^^
+[gpu1]   File "/home/user/ds-venv/lib/python3.12/site-packages/huggingface_hub/file_download.py", line 1047, in hf_hub_download
+[gpu1]     return _hf_hub_download_to_cache_dir(
+[gpu1]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[gpu1]   File "/home/user/ds-venv/lib/python3.12/site-packages/huggingface_hub/file_download.py", line 1194, in _hf_hub_download_to_cache_dir
+[gpu1]     _raise_on_head_call_error(head_call_error, force_download, local_files_only)
+[gpu1]   File "/home/user/ds-venv/lib/python3.12/site-packages/huggingface_hub/file_download.py", line 1961, in _raise_on_head_call_error
+[gpu1]     raise LocalEntryNotFoundError(
+[gpu1] huggingface_hub.errors.LocalEntryNotFoundError: An error happened while trying to locate the file on the Hub and we cannot find the requested files in the local cache. Please check your connection and try again or make sure your Internet connection is on.
+[gpu2] '[Errno -3] Temporary failure in name resolution' thrown while requesting HEAD https://huggingface.co/timm/vit_large_patch16_siglip_256.v2_webli/resolve/main/pytorch_model.bin
+[gpu2] httpcore2.ConnectError: [Errno -3] Temporary failure in name resolution
+[gpu2] 
+[gpu2] The above exception was the direct cause of the following exception:
+[gpu2] 
+[gpu2] httpx2.ConnectError: [Errno -3] Temporary failure in name resolution
+[gpu2] 
+[gpu2] The above exception was the direct cause of the following exception:
+[gpu2] 
+[gpu2] Traceback (most recent call last):
+[gpu2]   File "/home/user/datascape-2026/cv_worker.py", line 399, in <module>
+[gpu2]     main()
+[gpu2]   File "/home/user/datascape-2026/cv_worker.py", line 384, in main
+[gpu2]     train_one_fold(
+[gpu2]   File "/home/user/datascape-2026/cv_worker.py", line 252, in train_one_fold
+[gpu2]     model = timm.create_model(
+[gpu2]             ^^^^^^^^^^^^^^^^^^
+[gpu2]   File "/home/user/ds-venv/lib/python3.12/site-packages/timm/models/_factory.py", line 175, in create_model
+[gpu2]     model = create_fn(
+[gpu2]             ^^^^^^^^^^
+[gpu2]   File "/home/user/ds-venv/lib/python3.12/site-packages/timm/models/vision_transformer.py", line 4193, in vit_large_patch16_siglip_256
+[gpu2]     model = _create_vision_transformer(
+[gpu2]             ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[gpu2]   File "/home/user/ds-venv/lib/python3.12/site-packages/timm/models/vision_transformer.py", line 3218, in _create_vision_transformer
+[gpu2]     return build_model_with_cfg(
+[gpu2]            ^^^^^^^^^^^^^^^^^^^^^
+[gpu2]   File "/home/user/ds-venv/lib/python3.12/site-packages/timm/models/_builder.py", line 459, in build_model_with_cfg
+[gpu2]     load_pretrained(
+[gpu2]   File "/home/user/ds-venv/lib/python3.12/site-packages/timm/models/_builder.py", line 228, in load_pretrained
+[gpu2]     state_dict = load_state_dict_from_hf(pretrained_loc, weights_only=True, cache_dir=cache_dir)
+[gpu2]                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[gpu2]   File "/home/user/ds-venv/lib/python3.12/site-packages/timm/models/_hub.py", line 252, in load_state_dict_from_hf
+[gpu2]     cached_file = hf_hub_download(
+[gpu2]                   ^^^^^^^^^^^^^^^^
+[gpu2]   File "/home/user/ds-venv/lib/python3.12/site-packages/huggingface_hub/utils/_validators.py", line 89, in _inner_fn
+[gpu2]     return fn(*args, **kwargs)
+[gpu2]            ^^^^^^^^^^^^^^^^^^^
+[gpu2]   File "/home/user/ds-venv/lib/python3.12/site-packages/huggingface_hub/utils/_http.py", line 276, in _inner
+[gpu2]     return fn(*args, **kwargs)
+[gpu2]            ^^^^^^^^^^^^^^^^^^^
+[gpu2]   File "/home/user/ds-venv/lib/python3.12/site-packages/huggingface_hub/file_download.py", line 1047, in hf_hub_download
+[gpu2]     return _hf_hub_download_to_cache_dir(
+[gpu2]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[gpu2]   File "/home/user/ds-venv/lib/python3.12/site-packages/huggingface_hub/file_download.py", line 1194, in _hf_hub_download_to_cache_dir
+[gpu2]     _raise_on_head_call_error(head_call_error, force_download, local_files_only)
+[gpu2]   File "/home/user/ds-venv/lib/python3.12/site-packages/huggingface_hub/file_download.py", line 1961, in _raise_on_head_call_error
+[gpu2]     raise LocalEntryNotFoundError(
+[gpu2] huggingface_hub.errors.LocalEntryNotFoundError: An error happened while trying to locate the file on the Hub and we cannot find the requested files in the local cache. Please check your connection and try again or make sure your Internet connection is on.
+------------------
+
+[31m---------------------------------------------------------------------------[39m
+[31mRuntimeError[39m                              Traceback (most recent call last)
+[36mCell[39m[36m [39m[32mIn[18][39m[32m, line 149[39m
+[32m    145[39m     drain_logs(final=[38;5;28;01mTrue[39;00m)
+[32m    146[39m 
+[32m    147[39m exit_codes = [info[[33m"proc"[39m].returncode [38;5;28;01mfor[39;00m info [38;5;28;01min[39;00m workers]
+[32m    148[39m [38;5;28;01mif[39;00m any(c != [32m0[39m [38;5;28;01mfor[39;00m c [38;5;28;01min[39;00m exit_codes):
+[32m--> [39m[32m149[39m     [38;5;28;01mraise[39;00m RuntimeError(f"Training process(es) failed with exit codes {exit_codes}, see the log lines above")
+[32m    150[39m 
+[32m    151[39m all_fold_checkpoints = []  [38;5;66;03m# (val_f1, state_dict, fold_idx) for each fold's best checkpoint[39;00m
+[32m    152[39m fold_results = []  [38;5;66;03m# per-fold summary: fold, best_val_f1, best_epoch[39;00m
+
+[31mRuntimeError[39m: Training process(es) failed with exit codes [1, 1, 1], see the log lines above
+

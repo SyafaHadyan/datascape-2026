@@ -1,0 +1,7 @@
+{
+  "runs": {
+    "01": {"probs": "probs-run01-siglip2-b16.npz", "csv": "submission-run01-siglip2-b16.csv"},
+    "02": {"probs": "probs-run02-siglip2-seed1.npz", "csv": "submission-run02-siglip2-seed1.csv"},
+    "03": "probs-run03-dinov3-b16.npz"
+  }
+}

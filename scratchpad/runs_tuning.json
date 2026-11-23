@@ -1,0 +1,14 @@
+{"runs": {
+ "34": "../archive/probs-run34-siglip2-b16-seed1-l40.npz",
+ "32": "../archive/probs-run32-siglip2-b16.zip",
+ "36": "../archive/probs-run36-siglip2-seed2.npz",
+ "46": "../archive/probs-run46-siglip2-lr5e-5.npz",
+ "47": "../archive/probs-run47-siglip2-lr2e-5.npz",
+ "48": {"probs": "../archive/probs-run48-siglip2-layerdecay085.npz", "csv": "../submission-run48-siglip2-layerdecay085.csv"},
+ "49": {"probs": "../archive/probs-run49-siglip2-droppath01.npz", "csv": "../submission-run49-siglip2-droppath01.csv"},
+ "50": {"probs": "../archive/probs-run50-siglip2-ce-nofocal.npz", "csv": "../submission-run50-siglip2-ce-nofocal.csv"},
+ "51": {"probs": "../archive/probs-run51-siglip2-wd005.npz", "csv": "../submission-run51-siglip2-wd005.csv"},
+ "52": {"probs": "../archive/probs-run52-siglip2-ep15.npz", "csv": "../submission-run52-siglip2-ep15.csv"},
+ "68": {"probs": "../archive/probs-run68-siglip2-focal-gamma1.npz", "csv": "../submission-run68-siglip2-focal-gamma1.csv"},
+ "69": {"probs": "../archive/probs-run69-siglip2-focal-alpha.npz", "csv": "../submission-run69-siglip2-focal-alpha.csv"}
+}}

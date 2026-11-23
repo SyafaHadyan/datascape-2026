@@ -1,0 +1,126 @@
+================================================================================
+DATASCAPE 2026 — DATA MINING COMPETITION
+DELIVERABLE REQUIREMENTS, ENVIRONMENT & REPRODUCIBILITY GUIDE
+================================================================================
+
+1. INFORMASI IDENTITAS TIM
+--------------------------------------------------------------------------------
+Nama Tim             : Mistersippy
+Ketua Tim            : Radit Arsyad (https://www.kaggle.com/raditarsyad)
+Anggota Tim          : Valentinus Marvel (https://www.kaggle.com/valentinusmarvel06), Syafa (https://www.kaggle.com/syhdrs)
+ID Tim Kaggle        : 17010819
+Penyelenggara        : Himpunan Mahasiswa Data Science (HIMADS) Telkom University
+Tema Kompetisi       : "Bridge the Gap: From Raw Data to Real Impact"
+Studi Kasus          : E-Commerce Package Quality Control
+Metrik Evaluasi      : Macro-Averaged F1-Score (Aman, Rusak, Lainnya)
+
+
+2. TAUTAN DATASET RESMI & DATASET PENDUKUNG TIM
+--------------------------------------------------------------------------------
+a. Tautan Halaman Data & Unduhan Kompetisi Resmi Kaggle:
+   https://www.kaggle.com/competitions/datascape-2026-data-mining-competition/data
+   (Mounting direktori input standar Kaggle Notebook: /kaggle/input/datascape-2026-data-mining-competition)
+
+b. Tautan Dataset Training yang Telah Diaudit & Pretrained Weights (Dataset Tim):
+   https://www.kaggle.com/datasets/valentinusmarvel06/datascape-pretrained-weights
+   (Diunggah secara publik oleh anggota tim: Valentinus Marvel atas nama Tim Mistersippy)
+
+Catatan Aksesibilitas:
+- Dataset pendukung berstatus PUBLIC dan dapat diakses/diunduh secara bebas oleh dewan juri.
+- Notebook dirancang fleksibel dan dapat dijalankan secara langsung (self-contained)
+  menggunakan dataset resmi kompetisi dengan koneksi internet aktif untuk mengunduh
+  bobot transfer learning timm secara otomatis, maupun menggunakan dataset pendukung
+  di atas untuk eksekusi offline 100% reproduktif.
+
+
+3. DAFTAR REQUIREMENTS, MODULE & PACKAGE PYTHON (PINNED VERSIONS)
+--------------------------------------------------------------------------------
+Environment Dasar:
+- Python Version: 3.10+ / 3.11+ / 3.14 (Kompatibel penuh dengan lingkungan standar Kaggle)
+- Platform OS   : Linux (Kaggle Environment Ubuntu 22.04 LTS) / Windows 11
+
+Daftar Pustaka Inti (Core Libraries):
+- torch>=2.0.0, <=2.6.0
+- torchvision>=0.15.0, <=0.21.0
+- timm>=0.9.12, <=1.0.15
+- albumentations>=1.3.1, <=2.0.8
+- scikit-learn>=1.3.0, <=1.6.1
+- scipy>=1.11.0, <=1.15.2
+- pandas>=2.0.0, <=2.2.3
+- numpy>=1.24.0, <=2.2.3
+- pillow>=9.5.0, <=11.1.0
+- matplotlib>=3.7.0, <=3.10.1
+- seaborn>=0.12.0, <=0.13.2
+- safetensors>=0.4.0, <=0.5.3
+- tqdm>=4.65.0, <=4.67.1
+
+Perintah Instalasi Cepat:
+pip install timm albumentations scikit-learn scipy pandas numpy pillow matplotlib seaborn safetensors tqdm
+
+
+4. SPESIFIKASI PERANGKAT KERAS & AKSELERATOR
+--------------------------------------------------------------------------------
+- GPU Rekomendasi : NVIDIA Tesla T4 / P100 (Kaggle Default GPU) atau NVIDIA RTX
+- VRAM Minimum    : 8 GB - 16 GB
+- RAM Sistem      : 13 GB - 16 GB
+- Estimasi Runtime: ~5 - 9 menit (pada 1 GPU NVIDIA Tesla T4 / P100 di Kaggle) atau ~12 - 18 menit (pada CPU standar)
+
+
+5. PANDUAN MENJALANKAN ULANG NOTEBOOK (RE-RUN GUIDE LANGKAH DEMI LANGKAH)
+--------------------------------------------------------------------------------
+A. Melalui Lingkungan Kaggle Notebook (Direkomendasikan):
+   1. Buka platform Kaggle (https://www.kaggle.com) dan login menggunakan akun Anda.
+   2. Klik "New Notebook" atau "Import Notebook", lalu unggah file:
+      Mistersippy_Notebook_Datascape.ipynb
+   3. Pada panel kanan "Notebook Options":
+      - Accelerator : Pilih "GPU T4 x2" atau "GPU P100".
+      - Internet    : Set "Internet On" (untuk mengunduh checkpoint pretrained timm).
+      - Environment : Gunakan "Always use latest environment".
+   4. Pada panel kanan "Input Data":
+      - Tambahkan dataset resmi kompetisi:
+        "datascape-2026-data-mining-competition"
+      - (Opsional) Tambahkan dataset pendukung:
+        "datascape-pretrained-weights"
+   5. Klik tombol "Run All" (atau restart kernel & run all cells).
+   6. Notebook akan mengeksekusi secara otomatis:
+      - Validasi data & pembagian Stratified 5-Fold CV (Seed 42).
+      - Pipeline augmentasi Albumentations (ColorJitter, Affine, CoarseDropout).
+      - Pelatihan model transfer learning dengan Generalized Mean (GeM) Attention (p=3.0) & Spatial Attention Gate.
+      - Optimasi ambang batas multi-kelas Nelder-Mead untuk memaksimalkan Macro F1.
+      - Evaluasi modul kalibrasi dHash Near-Duplicate (d <= 3).
+      - Reproduksi presisi hasil Champion resmi tim (sub_19) menghasilkan file submisi final:
+        submission.csv (3.057 baris, 0 NaN, terverifikasi skor evaluasi Kaggle 0,84492).
+
+B. Melalui Lingkungan Komputer Lokal (Local Machine):
+   1. Buka terminal / command prompt pada root direktori project.
+   2. Buat dan aktifkan virtual environment (opsional namun disarankan).
+   3. Jalankan perintah instalasi dependensi:
+      pip install -r requirements.txt
+   4. Pastikan direktori dataset berada pada:
+      data/raw/Train_Set, data/raw/Test_Set, dan data/raw/sample_submission.csv
+   5. Buka Jupyter Lab / VS Code dan jalankan notebook Mistersippy_Notebook_Datascape.ipynb.
+
+
+6. PROTOKOL REPRODUSIBILITAS & DETERMINISTIK
+--------------------------------------------------------------------------------
+Notebook menerapkan fungsi seed_everything() secara ketat untuk menjamin hasil
+yang identik pada setiap eksekusi:
+- Random Seed PyTorch  : 42 (torch.manual_seed(42), torch.cuda.manual_seed(42))
+- Random Seed Numpy    : 42 (np.random.seed(42))
+- Random Seed Python   : 42 (random.seed(42))
+- Hash Seed Environment: 42 (PYTHONHASHSEED=42)
+- CUDNN Deterministic  : torch.backends.cudnn.deterministic = True
+
+
+7. PERNYATAAN PENGGUNAAN KECERDASAN BUATAN (AI USAGE DECLARATION)
+--------------------------------------------------------------------------------
+Sesuai ketentuan resmi Guidebook DATASCAPE 2026 Babak Penyisihan:
+1. Seluruh prediksi pengujian dihasilkan secara mandiri melalui algoritma pembelajaran
+   mesin (PyTorch, timm, Scikit-Learn) tanpa menggunakan LLM/VLM secara langsung untuk
+   menghasilkan label klasifikasi.
+2. Pemanfaatan AI generatif dibatasi hanya sebagai alat bantu pendukung (asistensi penulisan
+   kode, eksplorasi ide, dan penyusunan dokumentasi).
+
+================================================================================
+DELIVERABLES READY FOR FINAL SUBMISSION — TIM MISTERSIPPY (DATASCAPE 2026)
+================================================================================
